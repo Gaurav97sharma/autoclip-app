@@ -24,8 +24,10 @@ jobs:
           distribution: 'temurin'
           java-version: '17'
 
-      - name: Install dependencies and build Android project
+      - name: Prepare www folder and build Android project
         run: |
+          mkdir -p www
+          cp -r index.html app.js config.js style.css sw.js manifest.webmanifest icons www/ 2>/dev/null || true
           npm install
           npx cap add android
           npx cap sync android
