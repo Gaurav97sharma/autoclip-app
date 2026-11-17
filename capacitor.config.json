@@ -1,0 +1,6 @@
+{
+  "appId": "com.gaurav.autoclip",
+  "appName": "AutoClip",
+  "webDir": "www",
+  "bundledWebRuntime": false
+}
