@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="utf-8"><title>Autoclip</title>
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#17181c"><link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icons/icon-192.png"><link rel="apple-touch-icon" href="icons/icon-192.png">
+<link rel="stylesheet" href="style.css"></head><body>
+<div id="app">
+<video id="v" playsinline preload="auto"></video>
+
+<section class="screen on" id="home">
+<div class="logo"><i>✂</i><b>Autoclip</b></div>
+<h1>Turn any video into short clips</h1>
+<p class="sub">Paste a link or choose a video. Autoclip finds the best moments and cuts them for you.</p>
+<div class="lab">Video link</div>
+<div class="field" id="lf"><span>🔗</span><input id="url" placeholder="Paste a video link here" inputmode="url" autocomplete="off"><button class="lime" id="paste">Paste</button></div>
+<div class="chips">Works with <span class="chip">YouTube</span><span class="chip">Instagram</span><span class="chip">Facebook</span><span class="chip">TikTok</span><span class="chip">X</span><span class="chip">Vimeo</span> and more</div>
+<div id="hstat" class="sub" style="font-size:13px;margin-top:10px"></div><button class="lime" id="hset" style="margin-top:2px;font-size:14px">Server settings</button>
+<div class="lab">Or choose a video file</div>
+<label class="drop" id="drop"><input type="file" id="file" accept="video/*"><span style="font-size:30px">⬆</span><b id="fname">Choose a video file</b><span class="sub" id="fmeta">MP4, MOV or WebM · or drop it here</span></label>
+<div class="lab">Pick clips by</div>
+<div class="seg" id="pickby"><button data-v="fun" class="on">😂 Funny</button><button data-v="loud">Loudest</button><button data-v="mix">Mixed</button></div>
+<div class="lab">Clip length</div>
+<div class="seg" id="len"><button data-v="15">15s</button><button data-v="30" class="on">30s</button><button data-v="60">60s</button></div>
+<div class="lab">Format</div>
+<div class="seg" id="fmt"><button data-v="9:16" class="on">9:16</button><button data-v="1:1">1:1</button><button data-v="16:9">16:9</button></div>
+<button class="cta" id="find" disabled>✦ Find clips</button>
+<p class="note">Your projects and saved clips are kept inside this app on your phone until you delete them. Only clip videos you own or have permission to use.</p>
+</section>
+
+<section class="screen" id="lib">
+<div class="logo"><i>✂</i><b>My clips</b></div>
+<div class="lab">Continue where you left off</div><div id="projects"></div>
+<p class="sub" id="pempty">No projects yet. Make clips first.</p>
+<div class="lab">Saved clips</div><div id="exports"></div>
+<p class="sub" id="eempty">No saved clips yet. Open a clip and tap Export clip.</p>
+<p class="sub" id="usage" style="margin-top:14px;font-size:13px"></p>
+</section>
+
+<section class="screen" id="proc">
+<div class="top"><button class="back" id="pback" aria-label="Back">‹</button></div>
+<h2>Finding the best moments</h2>
+<p class="sub">Keep the app open. Very long videos are scanned while they play fast, so they take longer.</p>
+<div class="row" style="margin-top:22px"><span id="pt" style="font-weight:500;word-break:break-all"></span><span class="lime" id="pp">0%</span></div>
+<div class="bar"><i id="pb"></i></div>
+<div id="steps"></div>
+<button class="cta ghost" id="skip" style="display:none;margin-top:auto">Skip scan (use evenly spaced clips)</button>
+</section>
+
+<section class="screen" id="res">
+<div class="top"><button class="back" id="rback" aria-label="Back">‹</button></div>
+<h2 id="rh"></h2><p class="sub" id="rs"></p>
+<p class="sub" style="font-size:14px;margin-top:6px">Tick the clips you want to keep, then tap Export selected. Tap Edit to preview and change a clip.</p>
+<div id="clips" style="margin-top:16px"></div>
+<div class="foot two"><button class="cta ghost" id="selall">Select all</button><button class="cta" id="expall" disabled>⤓ Export selected (0)</button></div>
+</section>
+
+<section class="screen" id="edit">
+<div class="top"><button class="back" id="eback" aria-label="Back">‹</button><span class="badge top1" id="esc"></span></div>
+<div class="stage"><canvas id="pc"></canvas><button class="play" id="play">▶ Play</button></div>
+<div class="box">Fill the screen (crop to the person)<button class="sw" role="switch" id="rf" aria-checked="true" aria-label="Auto-reframe"></button></div>
+<div class="box">Captions<button class="sw" role="switch" id="capsw" aria-checked="true" aria-label="Captions"></button></div>
+<div class="box">Auto-focus on face (optional)<button class="sw" role="switch" id="af" aria-checked="false" aria-label="Auto-focus on face"></button></div>
+<div class="lab">Move focus left / right</div><input type="range" id="fx" min="0" max="1" step="0.01" value="0.5" style="width:100%;accent-color:#c8f26b">
+<div class="lab">Move focus up / down</div><input type="range" id="fy" min="0" max="1" step="0.01" value="0.5" style="width:100%;accent-color:#c8f26b">
+<div class="lab">Caption style</div>
+<div class="styles" id="styles"><button data-s="pop" class="on">Pop</button><button data-s="karaoke">Karaoke</button><button data-s="clean">Clean</button><button data-s="boxed">Boxed</button><button data-s="outline">Outline</button><button data-s="neon">Neon</button></div>
+<div class="lab">Format</div>
+<div class="seg" id="efmt"><button data-v="9:16">9:16</button><button data-v="1:1">1:1</button><button data-v="16:9">16:9</button></div>
+<div class="lab">Caption color</div>
+<div class="cols" id="cols"><button data-v="#c8f26b" style="background:#c8f26b" aria-label="Lime"></button><button data-v="#ffd23f" style="background:#ffd23f" aria-label="Yellow"></button><button data-v="#ff5fa2" style="background:#ff5fa2" aria-label="Pink"></button><button data-v="#4de1ff" style="background:#4de1ff" aria-label="Cyan"></button><button data-v="#ffffff" style="background:#ffffff" aria-label="White"></button></div>
+<div class="lab">Caption position</div>
+<div class="seg" id="cpos"><button data-v="top">Top</button><button data-v="mid">Middle</button><button data-v="bot">Bottom</button></div>
+<div class="lab">Caption size</div>
+<div class="seg" id="csize"><button data-v="0.8">Small</button><button data-v="1">Medium</button><button data-v="1.3">Large</button></div>
+<div class="lab">Background music (Indian)</div>
+<div class="seg" id="mmode"><button data-v="auto">Auto</button><button data-v="on">Always</button><button data-v="off">Off</button></div>
+<div class="seg" id="mmood" style="margin-top:8px"><button data-v="calm">Calm</button><button data-v="up">Upbeat</button><button data-v="soul">Soulful</button></div>
+<div class="sub" style="font-size:13px;margin-top:6px">Auto turns the music up in quiet parts and down under speech. Press Play to hear it.</div>
+<div class="lab">Trim</div>
+<div class="trim"><div class="fill" id="fill"></div><input type="range" id="t0" aria-label="Clip start"><input type="range" id="t1" aria-label="Clip end"></div>
+<div class="tr"><span id="ta"></span><b id="tl"></b><span id="tb"></span></div>
+<div class="lab">Captions</div>
+<div class="seg" id="lang"><button data-v="en-IN" class="on">English</button><button data-v="hi-IN">Hindi</button></div>
+<button class="cta ghost" id="auto" style="margin-top:8px">✦ Auto-generate captions</button>
+<label class="cta ghost" style="display:grid;place-items:center;cursor:pointer;margin-top:8px">Import .srt / .vtt file<input type="file" id="srt" accept=".srt,.vtt,.txt" style="display:none"></label>
+<div class="sub" style="font-size:13px;margin:6px 0 8px">Auto-generate plays the clip and listens to it. Allow the microphone if asked and keep the volume up. Then check the text below and fix any mistakes. Editing the text switches to even timing.</div>
+<textarea id="txt" placeholder="Words appear on screen in time with the clip"></textarea>
+<div id="xinfo"><div class="row"><span id="xl">Exporting…</span><span class="lime" id="xp">0%</span></div><div class="bar" style="margin-bottom:0"><i id="xb"></i></div></div>
+<button class="cta" id="exp">⤓ Export clip</button>
+<button class="cta ghost" id="share" style="display:none">Share clip</button>
+<p class="note">Clips export in Full HD (1080p). If your source video is lower quality, it is scaled up, not sharper. Exporting plays the clip in real time, so keep this tab open.</p>
+</section>
+<nav id="nav"><button data-n="home" class="on">✂ Create</button><button data-n="lib">▤ My clips</button></nav>
+<div id="player"><video id="pv" controls playsinline></video><div class="pbar"><a id="pdl" class="cta" style="display:grid;place-items:center;margin:0">⤓ Download</a><button id="pclose" class="cta ghost" style="margin:0">Close</button></div></div>
+<div id="toast" role="status"></div>
+</div>
+<script src="config.js"></script><script src="app.js"></script></body></html>
